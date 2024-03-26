@@ -26,6 +26,7 @@ const connection = mysql.createConnection({
 connection.connect((err) => {
   if (err) {
     console.error('Error connecting to MySQL:', err);
+    setTimeout(connectToDatabase, 4000); // Retry connection after 4 seconds
     return;
   }
   console.log('Connected to MySQL database');

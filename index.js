@@ -6,27 +6,22 @@ const cors = require('cors');
 const mysql = require('mysql');
 
 const app = express();
-const port = 3000;
+const port = 3306;
 
-app.use(cors()); // 使用 CORS 跨域套件
+app.use(cors()); // Use CORS for cross-origin requests
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// 虛擬的用戶資料，實際應用中需要存儲在數據庫中
-/*const users = [
-  { username: 'user1', password: 'password1' },
-  { username: 'user2', password: 'password2' }
-];*/
-
-// MySQL 數據庫連接
+// MySQL database connection
 const connection = mysql.createConnection({
-  host: 'localhost',
+  host: 'viaduct.proxy.rlwy.net',
+  port: 50186,
   user: 'root',
-  password: '',
-  database: 'test' // 替換為您的數據庫名稱
+  password: 'NvEZRElXKRkwlCQUvfryoLyskxrewkMd',
+  database: 'railway' 
 });
 
-// 連接到 MySQL 數據庫
+// Connect to MySQL database
 connection.connect((err) => {
   if (err) {
     console.error('Error connecting to MySQL:', err);
@@ -35,11 +30,11 @@ connection.connect((err) => {
   console.log('Connected to MySQL database');
 });
 
-// 登錄路由
+// Login route
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
-  // 在?据?中查找用?
+  // Query the database for the user
   const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
   connection.query(query, [username, password], (err, results) => {
     if (err) {
@@ -48,7 +43,7 @@ app.post('/login', (req, res) => {
       return;
     }
 
-    // 如果找到用?，表示登?成功
+    // If user found, login successful
     if (results.length > 0) {
       res.status(200).json({ message: 'login success' });
     } else {
@@ -57,15 +52,12 @@ app.post('/login', (req, res) => {
   });
 });
 
-
+// Route to retrieve game results
 app.get('/results', (req, res) => {
-  // 在這裡編寫從資料庫中檢索勝負結果資料的程式碼
-   // 假設 'win' 和 'lose' 是資料庫中的欄位名
-   // 從資料庫中查詢 'win' 和 'lose' 的值，並將其作為 JSON 資料傳回客戶端
+  // Retrieve game results from the database
+  const username = req.query.username;
 
-  const username = req.query.username; // ?取?求中的用?名??
-
-  const query = 'SELECT win, lose, username FROM users WHERE username = ?'; // 使用 WHERE 子句指定用?名
+  const query = 'SELECT win, lose, username FROM users WHERE username = ?';
   connection.query(query, [username], (err, results) => {
     if (err) {
       console.error('Error querying database:', err);
@@ -73,7 +65,7 @@ app.get('/results', (req, res) => {
       return;
     }
     if (results.length > 0) {
-      // 如果找到了用?，???果?送回客?端
+      // If user found, send results back to client
       res.status(200).json(results[0]);
     } else {
       res.status(404).json({ message: 'Results not found' });
@@ -81,16 +73,11 @@ app.get('/results', (req, res) => {
   });
 });
 
-
-
-
-
-
-// '/update-results' 路由，用於更新勝負結果數據
+// Route to update game results
 app.post('/update-results', (req, res) => {
-  const { result, username } = req.body; // 從請求體中取得遊戲結果，可能是 'win' 或 'lose'
+  const { result, username } = req.body;
 
-   // 根據遊戲結果更新資料庫中的數據
+  // Update the database based on game result
   let updateQuery;
   if (result === 'win') {
     updateQuery = 'UPDATE users SET win = win + 1 WHERE username = ?';
@@ -101,7 +88,7 @@ app.post('/update-results', (req, res) => {
     return;
   }
 
-  // 執行更新資料庫操作
+  // Execute the database update operation
   connection.query(updateQuery, [username] , (err, results) => {
     if (err) {
       console.error('Error updating database:', err);
@@ -109,7 +96,7 @@ app.post('/update-results', (req, res) => {
       return;
     }
 
-    // 回傳成功回應
+    // Return success response
     res.status(200).json({ message: 'Results updated successfully' });
   });
 });

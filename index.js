@@ -12,25 +12,30 @@ app.use(cors()); // Use CORS for cross-origin requests
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// MySQL database connection
-const connection = mysql.createConnection({
-  host: 'mysql.railway.internal',
-  port: 3306,
-  user: 'root',
-  password: 'NvEZRElXKRkwlCQUvfryoLyskxrewkMd',
-  database: 'railway' 
-});
+// Function to connect to MySQL database with retry mechanism
+function connectToDatabase() {
+  const connection = mysql.createConnection({
+    host: 'mysql.railway.internal',
+    port: 3306,
+    user: 'root',
+    password: 'NvEZRElXKRkwlCQUvfryoLyskxrewkMd',
+    database: 'railway'
+  });
 
+  connection.connect((err) => {
+    if (err) {
+      console.error('Error connecting to MySQL:', err);
+      setTimeout(connectToDatabase, 3000); // Retry connection after 3 seconds
+      return;
+    }
+    console.log('Connected to MySQL database');
+  });
 
-// Connect to MySQL database
-connection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err);
-    setTimeout(connectToDatabase, 4000); // Retry connection after 4 seconds
-    return;
-  }
-  console.log('Connected to MySQL database');
-});
+  return connection;
+}
+
+// Create MySQL connection
+const connection = connectToDatabase();
 
 // Login route
 app.post('/login', (req, res) => {

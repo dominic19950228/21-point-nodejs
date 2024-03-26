@@ -18,7 +18,8 @@ const connection = mysql.createConnection({
   port: 50186,
   user: 'root',
   password: 'NvEZRElXKRkwlCQUvfryoLyskxrewkMd',
-  database: 'railway' 
+  database: 'railway'
+  insecureAuth: true
 });
 
 

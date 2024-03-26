@@ -14,12 +14,13 @@ app.use(bodyParser.json());
 
 // MySQL database connection
 const connection = mysql.createConnection({
-  host: 'viaduct.proxy.rlwy.net',
-  port: 50186,
+  host: 'mysql.railway.internal',
+  port: 3306,
   user: 'root',
   password: 'NvEZRElXKRkwlCQUvfryoLyskxrewkMd',
   database: 'railway' 
 });
+
 
 // Connect to MySQL database
 connection.connect((err) => {

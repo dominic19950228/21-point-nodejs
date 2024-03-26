@@ -19,7 +19,6 @@ const connection = mysql.createConnection({
   user: 'root',
   password: 'NvEZRElXKRkwlCQUvfryoLyskxrewkMd',
   database: 'railway'
-  insecureAuth: true
 });
 
 

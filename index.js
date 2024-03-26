@@ -6,7 +6,7 @@ const cors = require('cors');
 const mysql = require('mysql');
 
 const app = express();
-const port = 50186;
+const port = 3306;
 
 app.use(cors()); // Use CORS for cross-origin requests
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -6,7 +6,7 @@ const cors = require('cors');
 const mysql = require('mysql');
 
 const app = express();
-const port = 3306;
+const port = 3000;
 
 app.use(cors()); // Use CORS for cross-origin requests
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -14,11 +14,10 @@ app.use(bodyParser.json());
 
 // MySQL database connection
 const connection = mysql.createConnection({
-  host: 'viaduct.proxy.rlwy.net',
-  port: 50186,
+  host: 'localhost',
   user: 'root',
-  password: 'NvEZRElXKRkwlCQUvfryoLyskxrewkMd',
-  database: 'railway'
+  password: '',
+  database: 'test'
 });
 
 
